@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "668101928273",
+    "project_id": "fizzi-de98e",
+    "storage_bucket": "fizzi-de98e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:668101928273:android:3bfac8d3f1366bd9bfdf70",
+        "android_client_info": {
+          "package_name": "com.example.fizzi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMAlyPygWxGv4Jf2iScnvtdH7RKKaBkxo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
