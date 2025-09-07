@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fizzi/feature/auth/domain/repositories/auth_repo.dart';
 
@@ -5,6 +6,7 @@ import '../domain/entities/app_user.dart';
 
 class FirebaseAuthRepo implements AuthRepo {
   FirebaseAuth firebaseAuth=FirebaseAuth.instance;
+  FirebaseFirestore firbaseFirestore=FirebaseFirestore.instance;
   @override
   Future<AppUser?> loginWithEmailPassword(String email, String password)async {
     // TODO: implement loginWithEmailPassword
@@ -31,7 +33,11 @@ class FirebaseAuthRepo implements AuthRepo {
 
       // create user
 
-      AppUser user=AppUser(uid: userCredential.user!.uid, email: email, name: '');
+      AppUser user=AppUser(uid: userCredential.user!.uid, email: email, name: name);
+
+      // save user in db
+      await firbaseFirestore.collection("users").doc(user.uid).set(user.toJson());
+
       // return user
 
       return user;

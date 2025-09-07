@@ -2,7 +2,7 @@ import 'package:fizzi/feature/auth/data/firebase_auth_repo.dart';
 import 'package:fizzi/feature/auth/presentation/cubits/auth_cubit.dart';
 import 'package:fizzi/feature/auth/presentation/cubits/auth_states.dart';
 import 'package:fizzi/feature/auth/presentation/pages/auth_page.dart';
-import 'package:fizzi/feature/posts/presentation/pages/home_page.dart';
+import 'package:fizzi/feature/home/presentation/pages/home_page.dart';
 import 'package:fizzi/themes/light_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -1,7 +1,5 @@
+import 'package:fizzi/feature/home/presentation/components/my_drawer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../auth/presentation/cubits/auth_cubit.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,11 +18,8 @@ class _HomePageState extends State<HomePage> {
       body: const Center(
         child: Text("Welcome to Home Page!"),
       ),
-      floatingActionButton: FloatingActionButton(onPressed: () {
-    final authCubit = context.read<AuthCubit>();
-    authCubit.logout();
-    }
-      ,child: Text('log'),),
+
+      drawer: MyDrawer(),
     );
   }
 }

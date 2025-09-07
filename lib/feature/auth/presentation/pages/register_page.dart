@@ -45,6 +45,14 @@ class _RegisterPageState extends State<RegisterPage> {
 
     authCubit.register(name, email, password);
   }
+  @override
+  void dispose(){
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
