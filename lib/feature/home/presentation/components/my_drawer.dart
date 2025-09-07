@@ -37,7 +37,12 @@ class MyDrawer extends StatelessWidget {
 
               MyDrawerTile(title: 'P R O F I L E', icon: Icons.person, onTap: (){
                 Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>const ProfilePage()));
+
+                //fetch user
+                final user=context.read<AuthCubit>().currentUser;
+
+                String? uid=user!.uid;
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfilePage(uid:uid)));
               }),
 
               // search
