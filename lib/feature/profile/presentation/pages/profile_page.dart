@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fizzi/feature/auth/domain/entities/app_user.dart';
 import 'package:fizzi/feature/auth/presentation/cubits/auth_cubit.dart';
 import 'package:fizzi/feature/profile/presentation/components/bio_box.dart';
@@ -72,19 +73,20 @@ class _ProfilePageState extends State<ProfilePage> {
                 const SizedBox(height: 25),
 
                 // profile pic
-                Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondary,
-                    borderRadius: BorderRadius.circular(12),
-                  ), // BoxDecoration
-                  height: 120,
-                  width: 120,
-                  padding: const EdgeInsets.all(25),
-                  child: Center(
-                    child: Icon(
-                      Icons.person,
-                      size: 72,
-                      color: Theme.of(context).colorScheme.primary,
+                CachedNetworkImage(
+                  imageUrl: user.profileImageUrl,
+                  //loading
+                  placeholder: (context,url)=>const CircularProgressIndicator(),
+                  //error
+                  errorWidget:  (context,url,error)=>Icon(Icons.person, size: 60,color: Theme.of(context).colorScheme.primary,),
+                  imageBuilder: (context,imageProvider)=>Container(
+
+                    height: 120,
+                    width: 120,
+
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(image: imageProvider,fit: BoxFit.cover),
                     ),
                   ),
                 ),
