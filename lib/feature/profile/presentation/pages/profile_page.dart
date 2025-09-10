@@ -5,6 +5,7 @@ import 'package:fizzi/feature/post/presentation/components/post_tile.dart';
 import 'package:fizzi/feature/post/presentation/cubit/post_cubit.dart';
 import 'package:fizzi/feature/post/presentation/cubit/post_states.dart';
 import 'package:fizzi/feature/profile/presentation/components/bio_box.dart';
+import 'package:fizzi/feature/profile/presentation/components/follow_button.dart';
 import 'package:fizzi/feature/profile/presentation/cubit/profile_cubit.dart';
 import 'package:fizzi/feature/profile/presentation/cubit/profile_states.dart';
 import 'package:fizzi/feature/profile/presentation/pages/edit_profile_page.dart';
@@ -32,8 +33,49 @@ class _ProfilePageState extends State<ProfilePage> {
     profileCubit.fetchUserProfile(widget.uid);
   }
 
+  //FOLLOW / UNFOLLW
+  void followButtonPressed() {
+    final profileState = profileCubit.state;
+    if (profileState is! ProfileLoaded) {
+      return; // return is profile is not loaded
+    }
+
+    final profileUser = profileState.profileUser;
+    final isFollowing = profileUser.followers.contains(currentUser!.uid);
+
+    setState(() {
+      //unfollow
+      if(isFollowing){
+        profileUser.followers.remove(currentUser!.uid);
+      }else{//unfollow
+        profileUser.followers.add(currentUser!.uid);
+
+      }
+    });
+
+    //perform actual toggle in cubit
+    profileCubit.toggleFollow(currentUser!.uid, widget.uid).catchError((error) {
+      // revert update if there's an error
+      setState(() {
+        // unfollow
+        if (isFollowing) {
+          profileUser.followers.add(currentUser!.uid);
+        }
+        // follow
+        else {
+          profileUser.followers.remove(currentUser!.uid);
+        }
+      });
+    });
+
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    //is Own Profile
+    bool isOwnProfile=(widget.uid==currentUser!.uid);
+
     return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
         if (state is ProfileLoaded) {
@@ -51,7 +93,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               foregroundColor: Theme.of(context).colorScheme.primary,
               actions: [
-                IconButton(
+                if(isOwnProfile)IconButton(
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -126,6 +168,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
 
                 const SizedBox(height: 30),
+
+                //follow button
+                if(!isOwnProfile) FollowButton(onPressed:followButtonPressed, isFollowing: user.followers.contains(currentUser!.uid)),
 
                 // Bio Section
                 Padding(

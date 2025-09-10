@@ -10,7 +10,8 @@ class ProfileCubit extends Cubit<ProfileState> {
   final ProfileRepo profileRepo;
   final StorageRepo storageRepo;
 
-  ProfileCubit({required this.profileRepo, required this.storageRepo}) : super(ProfileInitial());
+  ProfileCubit({required this.profileRepo, required this.storageRepo})
+    : super(ProfileInitial());
 
   // fetch user profile using repo -> usefull for loading single profile
   Future<void> fetchUserProfile(String uid) async {
@@ -30,20 +31,18 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   // fetch user profile using repo -> usefull for loading multiple profile for posts
   Future<ProfileUser?> getUserProfile(String uid) async {
-
-      final user=await profileRepo.fetchUserProfile(uid);
-      return user;
-
+    final user = await profileRepo.fetchUserProfile(uid);
+    return user;
   }
 
   // update user profile
 
-  Future<void> updateProfile(
-      {required String uid,
-        String? newBio,
-        Uint8List? imageWebBytes,
-        String? imageMobilePath,
-      }) async {
+  Future<void> updateProfile({
+    required String uid,
+    String? newBio,
+    Uint8List? imageWebBytes,
+    String? imageMobilePath,
+  }) async {
     try {
       emit(ProfileLoading());
       final user = await profileRepo.fetchUserProfile(uid);
@@ -59,29 +58,33 @@ class ProfileCubit extends Cubit<ProfileState> {
 
       // ensure there is an img
 
-      if(imageWebBytes !=null || imageMobilePath!=null){
+      if (imageWebBytes != null || imageMobilePath != null) {
         // for mobile
 
-        if(imageMobilePath != null){
-          imageDownloadUrl=await storageRepo.uploadPostImgMobile(imageMobilePath, uid);
-        }else if(imageWebBytes != null){//for web
-          imageDownloadUrl=await storageRepo.uploadPostImgWeb(imageWebBytes, uid);
+        if (imageMobilePath != null) {
+          imageDownloadUrl = await storageRepo.uploadPostImgMobile(
+            imageMobilePath,
+            uid,
+          );
+        } else if (imageWebBytes != null) {
+          //for web
+          imageDownloadUrl = await storageRepo.uploadPostImgWeb(
+            imageWebBytes,
+            uid,
+          );
         }
 
-        if(imageDownloadUrl==null){
+        if (imageDownloadUrl == null) {
           emit(ProfileError("Failed to upload image"));
           return;
         }
-
-
-
       }
 
       // update new profile
 
-      final updatedProfile=user.copyWith(
-          newBio: newBio ?? user.bio,
-        newProfileImageUrl: imageDownloadUrl?? user.profileImageUrl,
+      final updatedProfile = user.copyWith(
+        newBio: newBio ?? user.bio,
+        newProfileImageUrl: imageDownloadUrl ?? user.profileImageUrl,
       );
 
       // update
@@ -92,6 +95,16 @@ class ProfileCubit extends Cubit<ProfileState> {
       await fetchUserProfile(uid);
     } catch (e) {
       emit(ProfileError("Error updating profile: ${e.toString()}"));
+    }
+  }
+
+  // toggle follow/unfollow
+  Future<void> toggleFollow(String currentUserId, String targetUserId) async {
+    try {
+      await profileRepo.toggleFollow(currentUserId, targetUserId);
+
+    } catch (e) {
+      emit(ProfileError("Error toggling follow: $e"));
     }
   }
 }
