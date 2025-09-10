@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:fizzi/feature/profile/domain/entities/profile_user.dart';
 import 'package:fizzi/feature/profile/presentation/cubit/profile_states.dart';
 import 'package:fizzi/feature/storage/domain/storage_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,7 +12,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   ProfileCubit({required this.profileRepo, required this.storageRepo}) : super(ProfileInitial());
 
-  // fetch user profile using repo
+  // fetch user profile using repo -> usefull for loading single profile
   Future<void> fetchUserProfile(String uid) async {
     try {
       emit(ProfileLoading());
@@ -25,6 +26,14 @@ class ProfileCubit extends Cubit<ProfileState> {
     } catch (e) {
       emit(ProfileError(e.toString()));
     }
+  }
+
+  // fetch user profile using repo -> usefull for loading multiple profile for posts
+  Future<ProfileUser?> getUserProfile(String uid) async {
+
+      final user=await profileRepo.fetchUserProfile(uid);
+      return user;
+
   }
 
   // update user profile
@@ -54,9 +63,9 @@ class ProfileCubit extends Cubit<ProfileState> {
         // for mobile
 
         if(imageMobilePath != null){
-          imageDownloadUrl=await storageRepo.uploadProfileImgMobile(imageMobilePath, uid);
+          imageDownloadUrl=await storageRepo.uploadPostImgMobile(imageMobilePath, uid);
         }else if(imageWebBytes != null){//for web
-          imageDownloadUrl=await storageRepo.uploadProfileImgWeb(imageWebBytes, uid);
+          imageDownloadUrl=await storageRepo.uploadPostImgWeb(imageWebBytes, uid);
         }
 
         if(imageDownloadUrl==null){

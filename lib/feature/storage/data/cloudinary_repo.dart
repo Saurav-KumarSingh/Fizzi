@@ -11,6 +11,9 @@ class CloudinaryRepo implements StorageRepo {
   static final String uploadUrl =
       "https://api.cloudinary.com/v1_1/$cloudName/image/upload";
 
+  //PROFILE PICTURE
+
+
   // 📱 mobile platform
   @override
   Future<String?> uploadProfileImgMobile(String path, String fileName) async {
@@ -21,6 +24,20 @@ class CloudinaryRepo implements StorageRepo {
   @override
   Future<String?> uploadProfileImgWeb(Uint8List fileBytes, String fileName) async {
     return await _uploadBytes(fileBytes, fileName, "profile_images");
+  }
+
+  //POST PICTURE
+
+  // 📱 mobile platform
+  @override
+  Future<String?> uploadPostImgMobile(String path, String fileName) async {
+    return await _uploadFile(path, fileName, "post_images");
+  }
+
+  // 🌐 web platform
+  @override
+  Future<String?> uploadPostImgWeb(Uint8List fileBytes, String fileName) async {
+    return await _uploadBytes(fileBytes, fileName, "post_images");
   }
 
   /*
