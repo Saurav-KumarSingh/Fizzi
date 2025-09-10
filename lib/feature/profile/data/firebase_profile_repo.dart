@@ -11,14 +11,24 @@ class FirebaseProfileRepo implements ProfileRepo {
       final doc = await firebaseFirestore.collection("users").doc(uid).get();
 
       if (doc.exists && doc.data() != null) {
+
+        //fetch followers and following
+
+
         final userData = doc.data()!;
+
+
+        final followers=List<String>.from(userData['followers'] ?? []);
+        final following=List<String>.from(userData['following'] ?? []);
         // return ProfileUser.fromJson(userData);
         return ProfileUser(
             uid: uid,
             email: userData['email'],
             name: userData['name'],
             bio: userData['bio'] ?? ' ',
-            profileImageUrl: userData['profileImageUrl'].toString()
+            profileImageUrl: userData['profileImageUrl'].toString(),
+            followers: followers,
+            following: following,
         );
       } else {
         return null;
@@ -39,4 +49,6 @@ class FirebaseProfileRepo implements ProfileRepo {
       throw Exception("Failed to update user profile: $e");
     }
   }
+
+
 }

@@ -1,6 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fizzi/feature/auth/domain/entities/app_user.dart';
 import 'package:fizzi/feature/auth/presentation/cubits/auth_cubit.dart';
+import 'package:fizzi/feature/post/presentation/components/post_tile.dart';
+import 'package:fizzi/feature/post/presentation/cubit/post_cubit.dart';
+import 'package:fizzi/feature/post/presentation/cubit/post_states.dart';
 import 'package:fizzi/feature/profile/presentation/components/bio_box.dart';
 import 'package:fizzi/feature/profile/presentation/cubit/profile_cubit.dart';
 import 'package:fizzi/feature/profile/presentation/cubit/profile_states.dart';
@@ -10,138 +13,214 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfilePage extends StatefulWidget {
   final String uid;
-  const ProfilePage({super.key,required this.uid});
+  const ProfilePage({super.key, required this.uid});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  late final authCubit = context.read<AuthCubit>();
+  late final profileCubit = context.read<ProfileCubit>();
+  late AppUser? currentUser = authCubit.currentUser;
 
-  // cubit
-  late final authCubit=context.read<AuthCubit>();
-  late final profileCubit=context.read<ProfileCubit>();
+  int postCount = 0;
 
-  //current user
-  late AppUser? currentUser=authCubit.currentUser;
-
-  // on app startup
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    // load user profile
-
     profileCubit.fetchUserProfile(widget.uid);
-
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
-        // loaded
         if (state is ProfileLoaded) {
-          final user=state.profileUser;
+          final user = state.profileUser;
+
           return Scaffold(
-            // APP BAR
             appBar: AppBar(
-              title: Text(user.name),
+              elevation: 0,
+              centerTitle: true,
+              title: Text(
+                user.name,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               foregroundColor: Theme.of(context).colorScheme.primary,
               actions: [
-                
-                IconButton(onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>EditProfilePage(user:user)));
-                }, icon: Icon(Icons.settings))
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditProfilePage(user: user),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.settings),
+                ),
               ],
             ),
 
+            body: ListView(
 
-
-            // BODY
-
-            body: Column(
               children: [
-                // email
-                Text(
-                  user.email,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ), // Text
-
-                const SizedBox(height: 25),
-
-                // profile pic
-                CachedNetworkImage(
-                  imageUrl: user.profileImageUrl,
-                  //loading
-                  placeholder: (context,url)=>const CircularProgressIndicator(),
-                  //error
-                  errorWidget:  (context,url,error)=>Icon(Icons.person, size: 60,color: Theme.of(context).colorScheme.primary,),
-                  imageBuilder: (context,imageProvider)=>Container(
-
-                    height: 120,
-                    width: 120,
-
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(image: imageProvider,fit: BoxFit.cover),
+                // Profile Picture
+                Center(
+                  child: CachedNetworkImage(
+                    imageUrl: user.profileImageUrl,
+                    placeholder: (context, url) =>
+                    const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => CircleAvatar(
+                      radius: 60,
+                      backgroundColor:
+                      Theme.of(context).colorScheme.secondaryContainer,
+                      child: Icon(
+                        Icons.person,
+                        size: 60,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                    imageBuilder: (context, imageProvider) => Container(
+                      height: 120,
+                      width: 120,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.primary,
+                          width: 3,
+                        ),
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
                   ),
                 ),
 
-                SizedBox(height: 20,),
+                const SizedBox(height: 16),
 
-                //bio
-                Padding(
-                  padding: const EdgeInsets.only(left: 25.0),
-                  child: Row(
+                // Name & Email
+                Center(
+                  child: Column(
                     children: [
-                      Text("Bio",style: TextStyle(color: Theme.of(context).colorScheme.primary),)
+                      Text(
+                        user.name,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        user.email,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.outline,
+                        ),
+                      ),
                     ],
                   ),
                 ),
-                SizedBox(height: 10,),
 
+                const SizedBox(height: 30),
+
+                // Bio Section
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 22.0),
+                  child: Text(
+                    "Bio",
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
                 BioBox(text: user.bio),
 
+                const SizedBox(height: 30),
 
-                //posts
-
+                // Posts Section
                 Padding(
-                  padding: const EdgeInsets.only(left: 25.0,top: 25.0),
-                  child: Row(
-                    children: [
-                      Text("Posts",style: TextStyle(color: Theme.of(context).colorScheme.primary),)
-                    ],
+                  padding: const EdgeInsets.symmetric(horizontal: 22.0),
+                  child: Text(
+                    "Posts",
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
                 ),
                 SizedBox(height: 10,),
+                BlocBuilder<PostCubit, PostStates>(
+                  builder: (context, state) {
+                    if (state is PostLoaded) {
+                      final userPosts = state.posts
+                          .where((post) => post.userId == widget.uid)
+                          .toList();
 
+                      postCount = userPosts.length;
+
+                      if (userPosts.isEmpty) {
+                        return const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(20),
+                            child: Text("No posts yet..."),
+                          ),
+                        );
+                      }
+
+                      return ListView.builder(
+                        itemCount: postCount,
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          final post = userPosts[index];
+                          return PostTile(
+                            post: post,
+                            onDeletePressed: () =>
+                                context.read<PostCubit>().deletePost(post.id),
+                          );
+                        },
+                      );
+                    } else if (state is PostLoading ||
+                        state is PostUpLoading) {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(20),
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    } else {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(20),
+                          child: Text("No posts..."),
+                        ),
+                      );
+                    }
+                  },
+                ),
               ],
             ),
-
           );
         }
 
-        // loading..
         else if (state is ProfileLoading) {
           return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ), // Center
-          ); // Scaffold
+            body: Center(child: CircularProgressIndicator()),
+          );
         }
 
-        // fallback (error/initial)
         else {
-          return const Center(
-            child: Text("No profile found..."),
+          return const Scaffold(
+            body: Center(child: Text("No profile found...")),
           );
         }
       },
     );
-
   }
 }
