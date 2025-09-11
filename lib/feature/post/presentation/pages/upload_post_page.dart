@@ -7,6 +7,7 @@ import 'package:fizzi/feature/auth/presentation/cubits/auth_cubit.dart';
 import 'package:fizzi/feature/post/domain/entities/post.dart';
 import 'package:fizzi/feature/post/presentation/cubit/post_cubit.dart';
 import 'package:fizzi/feature/post/presentation/cubit/post_states.dart';
+import 'package:fizzi/responsive/constrained_scaffold.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -122,7 +123,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
         builder: (context,state){
           //loading or uploading
           if(state is PostLoading || state is PostUpLoading){
-            return const Scaffold(
+            return ConstrainedScaffold(
               body: Center(
                 child: CircularProgressIndicator(),
               ),
@@ -147,44 +148,108 @@ class _UploadPostPageState extends State<UploadPostPage> {
     );
   }
 
-  Widget buildUploadPage(){
-    return Scaffold(
-
-//APP BAR
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text("Create Post"),
-          foregroundColor: Theme.of(context).colorScheme.primary,
-          actions: [
-            IconButton(onPressed: uploadPost, icon:const Icon(Icons.upload))
-          ],
+  Widget buildUploadPage() {
+    return ConstrainedScaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text("Create Post"),
+        foregroundColor: Theme.of(context).colorScheme.primary,
+        actions: [
+          IconButton(onPressed: uploadPost, icon: const Icon(Icons.upload))
+        ],
       ),
 
-      //BODY
-
-      body: Center(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // img preview->web
+            // 👇 single slot for picker/preview
+            GestureDetector(
+              onTap: pickImage,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: (kIsWeb && webImage != null)
+                    ? Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    Image.memory(
+                      webImage!,
+                      width: double.infinity,
+                      fit: BoxFit.fitWidth,
+                    ),
+                    Container(
+                      width: double.infinity,
+                      color: Colors.black.withOpacity(0.4),
+                      padding: const EdgeInsets.all(8),
+                      child: const Text(
+                        "Tap to replace image",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                )
+                    : (!kIsWeb && imagePickedFile != null)
+                    ? Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    Image.file(
+                      File(imagePickedFile!.path!),
+                      width: double.infinity,
+                      fit: BoxFit.fitWidth,
+                    ),
+                    Container(
+                      width: double.infinity,
+                      color: Colors.black.withOpacity(0.4),
+                      padding: const EdgeInsets.all(8),
+                      child: const Text(
+                        "Tap to replace image",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                )
+                    : Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 40),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.6),
+                      width: 1.5,
+                    ),
+                    color: Theme.of(context).colorScheme.primary.withOpacity(0.05),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      Icon(Icons.add_photo_alternate_outlined, size: 40),
+                      SizedBox(height: 8),
+                      Text("Add Image"),
+                    ],
+                  ),
+                ),
+              ),
+            ),
 
-            if(kIsWeb && webImage != null) Image.memory(webImage!),
-
-            // img preview->mobile
-            if(!kIsWeb && imagePickedFile != null) Image.file(File(imagePickedFile!.path!)),
-
-
-            //pick img button 
-            
-            MaterialButton(onPressed: pickImage,child:const  Text("Pick Image"), color: Colors.blue,),
+            const SizedBox(height: 20),
 
             // caption text box
-
-            CustomTextField(controller: textController,hintText: "Caption",obscureText: false,),
-
+            CustomTextField(
+              controller: textController,
+              hintText: "Caption",
+              obscureText: false,
+            ),
           ],
         ),
       ),
     );
   }
+
+
+
+
 }
 

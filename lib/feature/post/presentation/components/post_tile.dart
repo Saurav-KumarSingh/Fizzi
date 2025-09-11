@@ -31,6 +31,8 @@ class _PostTileState extends State<PostTile> {
   //cubits
   late final postCubit = context.read<PostCubit>();
   late final profileCubit = context.read<ProfileCubit>();
+  //show all comment
+  bool _showAllComments = false;
 
   bool isOwnPost = false;
   //current user
@@ -344,7 +346,7 @@ class _PostTileState extends State<PostTile> {
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
 
-                const SizedBox(width: 10),
+                const SizedBox(width: 7),
 
                 Text(widget.post.text),
               ],
@@ -354,45 +356,68 @@ class _PostTileState extends State<PostTile> {
           // COMMENT SECTION
           BlocBuilder<PostCubit, PostStates>(
             builder: (context, state) {
-              // LOADED
               if (state is PostLoaded) {
                 // find individual post
                 final post = state.posts.firstWhere(
-                  (post) => post.id == widget.post.id,
+                      (post) => post.id == widget.post.id,
                 );
 
                 if (post.comments.isNotEmpty) {
-                  // how many comments to show
-                  int showCommentCount = post.comments.length;
+                  // if not expanded, show max 3 comments
+                  final commentsToShow = _showAllComments
+                      ? post.comments
+                      : post.comments.take(3).toList();
 
-                  // comment section
-                  return ListView.builder(
-                    itemCount: showCommentCount,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      // get individual comment
-                      final comment = post.comments[index];
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // comments
+                      ListView.builder(
+                        itemCount: commentsToShow.length,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          final comment = commentsToShow[index];
+                          return CommentTile(comment: comment);
+                        },
+                      ),
 
-                      // comment tile UI
-                      return CommentTile(comment: comment);
-                    },
-                  ); // ListView.builder
+                      // "View more" button if comments > 3
+                      if (post.comments.length > 3 && !_showAllComments)
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              _showAllComments = true;
+                            });
+                          },
+                          child: const Text("View more comments"),
+                        ),
+
+                      // "Show less" when expanded
+                      if (_showAllComments && post.comments.length > 3)
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              _showAllComments = false;
+                            });
+                          },
+                          child: const Text("Show less"),
+                        ),
+                    ],
+                  );
                 }
               }
 
-              // LOADING..
               if (state is PostLoading) {
                 return const Center(child: CircularProgressIndicator());
-              }
-              // ERROR
-              else if (state is PostError) {
+              } else if (state is PostError) {
                 return Center(child: Text(state.message));
               } else {
-                return const Center(child: SizedBox());
+                return const SizedBox();
               }
             },
           ),
+
         ],
       ),
     );

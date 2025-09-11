@@ -1,5 +1,6 @@
 import 'package:fizzi/feature/profile/presentation/components/user_tile.dart';
 import 'package:fizzi/feature/profile/presentation/cubit/profile_cubit.dart';
+import 'package:fizzi/responsive/constrained_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,7 +18,7 @@ class FollowersPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
-      child: Scaffold(
+      child: ConstrainedScaffold(
         appBar: AppBar(
           title: const Text("Connections"),
           bottom: TabBar(

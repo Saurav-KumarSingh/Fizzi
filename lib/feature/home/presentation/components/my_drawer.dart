@@ -1,6 +1,7 @@
 import 'package:fizzi/feature/home/presentation/components/my_drawer_tile.dart';
 import 'package:fizzi/feature/profile/presentation/pages/profile_page.dart';
 import 'package:fizzi/feature/search/presentation/pages/search_pages.dart';
+import 'package:fizzi/feature/settings/pages/setting_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -55,7 +56,9 @@ class MyDrawer extends StatelessWidget {
 
               // settings
 
-              MyDrawerTile(title: 'S E T T I N G S', icon: Icons.settings, onTap: (){}),
+              MyDrawerTile(title: 'S E T T I N G S', icon: Icons.settings, onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>SettingsPage()));
+              }),
 
 
               const Spacer(),

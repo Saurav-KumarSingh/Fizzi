@@ -11,6 +11,7 @@ import 'package:fizzi/feature/profile/presentation/cubit/profile_cubit.dart';
 import 'package:fizzi/feature/profile/presentation/cubit/profile_states.dart';
 import 'package:fizzi/feature/profile/presentation/pages/edit_profile_page.dart';
 import 'package:fizzi/feature/profile/presentation/pages/followers_page.dart';
+import 'package:fizzi/responsive/constrained_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -83,7 +84,7 @@ class _ProfilePageState extends State<ProfilePage> {
         if (state is ProfileLoaded) {
           final user = state.profileUser;
 
-          return Scaffold(
+          return ConstrainedScaffold(
             appBar: AppBar(
               elevation: 0,
               centerTitle: true,
@@ -265,13 +266,13 @@ class _ProfilePageState extends State<ProfilePage> {
         }
 
         else if (state is ProfileLoading) {
-          return const Scaffold(
+          return const ConstrainedScaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
 
         else {
-          return const Scaffold(
+          return const ConstrainedScaffold(
             body: Center(child: Text("No profile found...")),
           );
         }

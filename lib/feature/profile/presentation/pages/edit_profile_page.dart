@@ -7,6 +7,7 @@ import 'package:fizzi/feature/auth/presentation/components/text_field.dart';
 import 'package:fizzi/feature/profile/domain/entities/profile_user.dart';
 import 'package:fizzi/feature/profile/presentation/cubit/profile_cubit.dart';
 import 'package:fizzi/feature/profile/presentation/cubit/profile_states.dart';
+import 'package:fizzi/responsive/constrained_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -88,7 +89,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       builder: (context, state) {
         // profile loading..
         if (state is ProfileLoading) {
-          return const Scaffold(
+          return ConstrainedScaffold(
             body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -98,7 +99,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ],
               ), // Column
             ), // Center
-          ); // Scaffold
+          );
         } else {
           // edit form
           return buildEditPage();
@@ -112,67 +113,109 @@ class _EditProfilePageState extends State<EditProfilePage> {
     ); // BlocConsumer
   }
   Widget buildEditPage() {
-    return Scaffold(
+    return ConstrainedScaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text("Edit Profile"),
-        foregroundColor: Theme.of(context).colorScheme.primary,
         actions: [
-          IconButton(onPressed: updateProfile, icon: Icon(Icons.upload))
+          IconButton(
+            onPressed: updateProfile,
+            icon: const Icon(Icons.check),
+            tooltip: "Save",
+          ),
         ],
       ),
-      body: Column(
-        children: [
-
-
-          // profile pic
-
-          Center(
-            child: Container(
-              height: 200,
-              width: 200,
-              clipBehavior: Clip.hardEdge,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondary,
-                shape: BoxShape.circle,
-
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Profile picture with circular style
+            Center(
+              child: GestureDetector(
+                onTap: pickImage,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 70,
+                      backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+                      backgroundImage: (!kIsWeb && imagePickedFile != null)
+                          ? FileImage(File(imagePickedFile!.path!))
+                          : (kIsWeb && webImg != null)
+                          ? MemoryImage(webImg!)
+                          : null,
+                      child: (imagePickedFile == null && webImg == null)
+                          ? CachedNetworkImage(
+                        imageUrl: widget.user.profileImageUrl,
+                        placeholder: (context, url) =>
+                        const CircularProgressIndicator(),
+                        errorWidget: (context, url, error) => Icon(
+                          Icons.person,
+                          size: 60,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        imageBuilder: (context, imageProvider) =>
+                            CircleAvatar(
+                              radius: 70,
+                              backgroundImage: imageProvider,
+                            ),
+                      )
+                          : null,
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary,
+                          shape: BoxShape.circle,
+                        ),
+                        padding: const EdgeInsets.all(6),
+                        child: const Icon(
+                          Icons.camera_alt,
+                          size: 20,
+                          color: Colors.white,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
-              child:
-                //display selected img for mobile
-              (!kIsWeb && imagePickedFile != null)?
-                  Image.file(File(imagePickedFile!.path!),fit: BoxFit.cover,)
-                  :
-                //display selected img for mobile
-              (kIsWeb && webImg != null)?
-              Image.memory(webImg!,fit: BoxFit.cover):
-              //display for no selected img
-              CachedNetworkImage(
-                imageUrl: widget.user.profileImageUrl,
-                //loading
-                placeholder: (context,url)=>const CircularProgressIndicator(),
-                //error
-                errorWidget:  (context,url,error)=>Icon(Icons.person, size: 60,color: Theme.of(context).colorScheme.primary,),
-                imageBuilder: (context,imageProvider)=>Image(image: imageProvider,fit: BoxFit.cover,),
-              )
             ),
-          ),
 
-          SizedBox(height: 15,),
-          Center(
-            child: MaterialButton(onPressed: pickImage,color: Colors.blue,child: const Text("Pick Image"),),
-          ),
+            const SizedBox(height: 30),
 
-          //bio
-          const Text("Bio"),
-          const SizedBox(height: 10,),
-          
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25.0),
-            child: CustomTextField(controller: _bioTextController, hintText: widget.user.bio),
-          )
-        ],
+            // Bio field
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Bio",
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+            const SizedBox(height: 10),
+
+            TextField(
+              controller: _bioTextController,
+              maxLines: 5,
+              minLines: 3,
+              decoration: InputDecoration(
+                hintText: widget.user.bio.isNotEmpty
+                    ? widget.user.bio
+                    : "Write something about yourself...",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                contentPadding: const EdgeInsets.all(16),
+              ),
+            ),
+          ],
+        ),
       ),
-    ); // Scaffold
+    );
   }
+
+
 }
 

@@ -10,6 +10,7 @@ import 'package:fizzi/feature/profile/presentation/cubit/profile_cubit.dart';
 import 'package:fizzi/feature/search/data/firebase_search_repo.dart';
 import 'package:fizzi/feature/search/presentation/cubit/search_cubit.dart';
 import 'package:fizzi/feature/storage/data/cloudinary_repo.dart';
+import 'package:fizzi/responsive/constrained_scaffold.dart';
 import 'package:fizzi/themes/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -81,7 +82,7 @@ class MyApp extends StatelessWidget {
                 if (authState is UnAuthenticated) return AuthPage();
                 if (authState is Authenticated) return HomePage();
 
-                return const Scaffold(
+                return const ConstrainedScaffold(
                   body: Center(
                     child: CircularProgressIndicator(),
                   ),

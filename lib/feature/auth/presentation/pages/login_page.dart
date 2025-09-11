@@ -1,6 +1,7 @@
 import 'package:fizzi/feature/auth/presentation/components/custombutton.dart';
 import 'package:fizzi/feature/auth/presentation/components/text_field.dart';
 import 'package:fizzi/feature/auth/presentation/cubits/auth_cubit.dart';
+import 'package:fizzi/responsive/constrained_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -44,8 +45,8 @@ class _LoginPageState extends State<LoginPage> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
+    return ConstrainedScaffold(
+
       body: SafeArea(
         child: Center(
           child: Padding(

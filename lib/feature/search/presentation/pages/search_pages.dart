@@ -1,6 +1,7 @@
 import 'package:fizzi/feature/profile/presentation/components/user_tile.dart';
 import 'package:fizzi/feature/search/presentation/cubit/search_cubit.dart';
 import 'package:fizzi/feature/search/presentation/cubit/search_states.dart';
+import 'package:fizzi/responsive/constrained_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -39,7 +40,7 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ConstrainedScaffold(
       appBar: AppBar(
         title: TextField(
           controller: _searchController,

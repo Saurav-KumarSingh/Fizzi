@@ -3,6 +3,7 @@ import 'package:fizzi/feature/post/presentation/components/post_tile.dart';
 import 'package:fizzi/feature/post/presentation/cubit/post_cubit.dart';
 import 'package:fizzi/feature/post/presentation/cubit/post_states.dart';
 import 'package:fizzi/feature/post/presentation/pages/upload_post_page.dart';
+import 'package:fizzi/responsive/constrained_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -36,7 +37,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ConstrainedScaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text("Fizzi"),
