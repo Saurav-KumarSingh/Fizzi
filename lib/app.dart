@@ -7,6 +7,8 @@ import 'package:fizzi/feature/post/data/cloudinary_post_repo.dart';
 import 'package:fizzi/feature/post/presentation/cubit/post_cubit.dart';
 import 'package:fizzi/feature/profile/data/firebase_profile_repo.dart';
 import 'package:fizzi/feature/profile/presentation/cubit/profile_cubit.dart';
+import 'package:fizzi/feature/search/data/firebase_search_repo.dart';
+import 'package:fizzi/feature/search/presentation/cubit/search_cubit.dart';
 import 'package:fizzi/feature/storage/data/cloudinary_repo.dart';
 import 'package:fizzi/themes/light_mode.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +27,9 @@ class MyApp extends StatelessWidget {
   //POST repo
 
   final postRepo=CloudinaryPostRepo();
+//SEARCH repo
+
+  final searchRepo=FirebaseSearchRepo();
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +53,13 @@ class MyApp extends StatelessWidget {
           create: (context) => PostCubit(
               postRepo: postRepo,
               storageRepo:storageRepo,
+          ),
+        ),
+
+        //search cubit
+        BlocProvider<SearchCubit>(
+          create: (context) => SearchCubit(
+            searchRepo: searchRepo,
           ),
         ),
 
