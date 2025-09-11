@@ -21,19 +21,26 @@ Fizzi is a modern Flutter-based social media app designed for seamless interacti
 * flutter\_bloc for state management
 * cached\_network\_image for image caching
 
+## Demo
+
+Check out the live demo here: [Fizzi Demo](https://fizzi-de98e.web.app/)
+
 ## Screenshots
 
-| Register                                            | Login                                         | Home                                        |
-| --------------------------------------------------- | --------------------------------------------- | ------------------------------------------- |
-| ![Register Screen](assets/screenshots/register.jpg) | ![Login Screen](assets/screenshots/login.jpg) | ![Home Screen](assets/screenshots/home.jpg) |
+| Register                                                              | Login                                                              | Home                                                              |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| <img src="assets/screenshots/register.jpg" width="200" height="350"/> | <img src="assets/screenshots/login.jpg" width="200" height="350"/> | <img src="assets/screenshots/home.jpg" width="200" height="350"/> |
 
-| Create Post                                       | Profile                                           | Edit Profile                                              |
-| ------------------------------------------------- | ------------------------------------------------- | --------------------------------------------------------- |
-| ![POST Screen](assets/screenshots/createpost.jpg) | ![Profile Screen](assets/screenshots/profile.jpg) | ![EditProfile Screen](assets/screenshots/editprofile.jpg) |
+| Create Post                                                             | Profile                                                              | Edit Profile                                                             |
+| ----------------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| <img src="assets/screenshots/createpost.jpg" width="200" height="350"/> | <img src="assets/screenshots/profile.jpg" width="200" height="350"/> | <img src="assets/screenshots/editprofile.jpg" width="200" height="350"/> |
 
-| Dark Mode                                           | Connections                                               |   |
-| --------------------------------------------------- | --------------------------------------------------------- | - |
-| ![DarkMode Screen](assets/screenshots/darkmode.jpg) | ![Connections Screen](assets/screenshots/connections.jpg) |   |
+| Dark Mode                                                             | Connections                                                              |   |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------ | - |
+| <img src="assets/screenshots/darkmode.jpg" width="200" height="350"/> | <img src="assets/screenshots/connections.jpg" width="200" height="350"/> |   |
+
+
+
 
 ## Environment Configuration (.env)
 
