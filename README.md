@@ -8,8 +8,8 @@ Fizzi is a modern Flutter-based social media app designed for seamless interacti
 * **Social Feed:** Follow/unfollow users, view personalized feed with posts in real-time.
 * **Post Management:** Create, edit, delete posts with text and images, like, and comment.
 * **Media Handling:** Upload and display images with Cloudinary integration and caching.
-* **Notifications:** Get updates for likes, comments, and new followers.
-* **Search & Explore:** Find users and trending posts quickly.
+* **Dark Mode:** use the app in dark mode as well.
+* **Search & Explore:** Find users quickly.
 * **Responsive UI:** Smooth, user-friendly interface with Flutter widgets.
 * **State Management:** Organized app architecture with BLoC (cubits) for maintainability.
 
@@ -23,15 +23,28 @@ Fizzi is a modern Flutter-based social media app designed for seamless interacti
 
 ## Screenshots
 
-![Register Screen](assets/screenshots/register.jpg)
-![Login Screen](assets/screenshots/login.jpg)
-![Home Screen](assets/screenshots/home.jpg)
-![POST Screen](assets/screenshots/createpost.jpg)
-![Profile Screen](assets/screenshots/profile.jpg)
-![editProfile Screen](assets/screenshots/editprofile.jpg)
-![DarkMode Screen](assets/screenshots/darkmode.jpg)
-![Connections Screen](assets/screenshots/connections.jpg)
+| Register                                            | Login                                         | Home                                        |
+| --------------------------------------------------- | --------------------------------------------- | ------------------------------------------- |
+| ![Register Screen](assets/screenshots/register.jpg) | ![Login Screen](assets/screenshots/login.jpg) | ![Home Screen](assets/screenshots/home.jpg) |
 
+| Create Post                                       | Profile                                           | Edit Profile                                              |
+| ------------------------------------------------- | ------------------------------------------------- | --------------------------------------------------------- |
+| ![POST Screen](assets/screenshots/createpost.jpg) | ![Profile Screen](assets/screenshots/profile.jpg) | ![EditProfile Screen](assets/screenshots/editprofile.jpg) |
+
+| Dark Mode                                           | Connections                                               |   |
+| --------------------------------------------------- | --------------------------------------------------------- | - |
+| ![DarkMode Screen](assets/screenshots/darkmode.jpg) | ![Connections Screen](assets/screenshots/connections.jpg) |   |
+
+## Environment Configuration (.env)
+
+Create a `.env` file in the project root with the following variables:
+
+```env
+# Cloudinary configuration
+CLOUDINARY_DB_NAME=your_cloud_name
+CLOUDINARY_DB_UPLOADPRESET=your_upload_preset
+
+```
 ## Setup
 
 1. Clone the repo:
@@ -53,5 +66,3 @@ flutter pub get
 ```bash
 flutter run
 ```
-
-
