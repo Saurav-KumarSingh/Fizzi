@@ -6,9 +6,11 @@ import 'package:fizzi/feature/post/presentation/cubit/post_cubit.dart';
 import 'package:fizzi/feature/post/presentation/cubit/post_states.dart';
 import 'package:fizzi/feature/profile/presentation/components/bio_box.dart';
 import 'package:fizzi/feature/profile/presentation/components/follow_button.dart';
+import 'package:fizzi/feature/profile/presentation/components/profile_stats.dart';
 import 'package:fizzi/feature/profile/presentation/cubit/profile_cubit.dart';
 import 'package:fizzi/feature/profile/presentation/cubit/profile_states.dart';
 import 'package:fizzi/feature/profile/presentation/pages/edit_profile_page.dart';
+import 'package:fizzi/feature/profile/presentation/pages/followers_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -168,6 +170,14 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
 
                 const SizedBox(height: 30),
+
+                // profile stats
+                ProfileStats(
+                  postCount: postCount,
+                  followerCount: user.followers.length,
+                  followingCount: user.following.length,
+                  onTap: ()=>Navigator.push(context, MaterialPageRoute(builder: (contexxt)=>FollowersPage(followers: user.followers, following: user.following))),
+                ),
 
                 //follow button
                 if(!isOwnProfile) FollowButton(onPressed:followButtonPressed, isFollowing: user.followers.contains(currentUser!.uid)),
