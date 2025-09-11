@@ -10,7 +10,7 @@ import 'package:fizzi/feature/profile/presentation/cubit/profile_cubit.dart';
 import 'package:fizzi/feature/search/data/firebase_search_repo.dart';
 import 'package:fizzi/feature/search/presentation/cubit/search_cubit.dart';
 import 'package:fizzi/feature/storage/data/cloudinary_repo.dart';
-import 'package:fizzi/themes/light_mode.dart';
+import 'package:fizzi/themes/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -63,33 +63,40 @@ class MyApp extends StatelessWidget {
           ),
         ),
 
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Fizzi',
-        theme: lightMode,
-        home: BlocConsumer<AuthCubit, AuthState>(
-          builder: (context, authState) {
-            debugPrint("Auth state: $authState");
-
-            if (authState is UnAuthenticated) return AuthPage();
-            if (authState is Authenticated) return HomePage();
-
-            return const Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          },
-          listener: (context, state) {
-            if (state is AuthError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message)),
-              );
-            }
-          },
+        //theme cubit
+        BlocProvider<ThemeCubit>(
+          create: (context) => ThemeCubit(),
         ),
-      ),
+
+      ],
+      child: BlocBuilder<ThemeCubit,ThemeData>(
+          builder: (context,currentTheme)=>MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Fizzi',
+            theme: currentTheme,
+            home: BlocConsumer<AuthCubit, AuthState>(
+              builder: (context, authState) {
+                debugPrint("Auth state: $authState");
+
+                if (authState is UnAuthenticated) return AuthPage();
+                if (authState is Authenticated) return HomePage();
+
+                return const Scaffold(
+                  body: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              },
+              listener: (context, state) {
+                if (state is AuthError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(state.message)),
+                  );
+                }
+              },
+            ),
+          ),
+      )
     );
   }
 }

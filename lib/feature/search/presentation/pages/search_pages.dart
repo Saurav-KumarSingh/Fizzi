@@ -46,13 +46,7 @@ class _SearchPageState extends State<SearchPage> {
           decoration: InputDecoration(
             hintText: "Search users...",
             hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
-            suffixIcon: IconButton(
-              icon: const Icon(Icons.clear),
-              onPressed: () {
-                _searchController.clear();
-                searchCubit.searchUsers(""); // reset search
-              },
-            ),
+
           ),
         ),
       ),
